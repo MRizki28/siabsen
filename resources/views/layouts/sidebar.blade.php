@@ -46,6 +46,14 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="/divisi" class="nav-link">
+                        <i class="nav-icon fas fa-building"></i>                
+                        <p>
+                            Divisi
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="/absen" class="nav-link">
                         <i class="nav-icon fas fa-pen"></i>                  
                         <p>

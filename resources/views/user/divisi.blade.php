@@ -7,9 +7,10 @@
     </div>
     <div class="card">
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold ">Data Absen</h6>
-            <button type="submit" class="btn btn-outline-primary ml-auto" id="#myBtn">
-                Absen
+            <h6 class="m-0 font-weight-bold ">Data Divisi</h6>
+            <button type="button" class="btn btn-outline-primary ml-auto" data-toggle="modal" data-target="#DivisiModal"
+                id="#myBtn">
+                Tambah Data
             </button>
         </div>
         <!-- /.card-header -->
@@ -18,10 +19,7 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Nama</th>
-                        <th>Divisi</th>
-                        <th>Waktu absen</th>
-                        <th>Status</th>
+                        <th>Nama Divisi</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -29,6 +27,69 @@
 
                 </tbody>
             </table>
+        </div>
+        <!-- /.card-body -->
+
+        {{-- modal create --}}
+        <div class="modal fade" id="DivisiModal" tabindex="-1" role="dialog" aria-labelledby="DivisiModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="DivisiModalLabel">Tambah Data</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formTambah" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="uuid">
+                            <div class="form-group">
+                                <label for="nama_divisi">Nama Divisi</label>
+                                <input type="text" class="form-control" name="nama_divisi" id="nama_divisi"
+                                    placeholder="Input Here..">
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-outline-primary">Submit</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- MODAL EDIT --}}
+    <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="EditModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="EditModalLabel">Edit Author</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEdit" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="uuid" id="uuid">
+                        <div class="form-group">
+                            <label for="nama_divisi">Nama Divisi</label>
+                            <input type="text" class="form-control" name="nama_divisi" id="enama_divisi"
+                                placeholder="Input Here..">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" form="formEdit" class="btn btn-outline-primary">Update Data</button>
+                </div>
+
+            </div>
         </div>
     </div>
     <script>
@@ -69,9 +130,9 @@
             });
         });
 
-        //absen
+        //tambah data
         $(document).ready(function() {
-            var formTambah = $('#myBtn');
+            var formTambah = $('#formTambah');
             formTambah.on('submit', function(e) {
                 e.preventDefault();
                 var formData = new FormData(this);

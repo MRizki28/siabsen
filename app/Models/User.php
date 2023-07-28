@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'id_divisi',
+        'password_reset_token'
     ];
 
     /**
@@ -41,4 +44,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function divisi()
+    {
+        return $this->belongsTo(DivisiModel::class, 'id_divisi');
+    }
+
+    public function getTahun($id_divisi)
+    {
+        $data = $this->join('tb_divisi', 'users.id_divisi', '=', 'tb_divisi.id')
+            ->select('tb_divisi.uuid', 'tb_divisi.nama_divisi')
+            ->where('users.id_divisi', '=', $id_divisi)
+            ->first();
+        return $data;
+    }
 }

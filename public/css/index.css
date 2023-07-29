@@ -20,3 +20,21 @@
 .loading img {
     max-width: 58px;
 }
+
+.error-message {
+    color: red;
+    margin-bottom: 10px;
+}
+
+.success-message {
+    color: green;
+    margin-bottom: 10px;
+}
+
+.btn-csv{
+    background-color: #2d84f4;
+}
+
+.btn-excel{
+    background-color: #2d84f4;
+}

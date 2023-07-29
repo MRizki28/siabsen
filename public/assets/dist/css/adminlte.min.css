@@ -36955,7 +36955,7 @@ a.disabled.mailbox-attachment-close {
 .register-page {
     -ms-flex-align: center;
     align-items: center;
-    background-color: #e9ecef;
+    background-image: url("/bg-home.jpeg");
     display: -ms-flexbox;
     display: flex;
     -ms-flex-direction: column;

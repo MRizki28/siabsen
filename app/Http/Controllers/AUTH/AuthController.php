@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\AUTH;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ForgotPasswordMail;
 use App\Mail\VerificationMail;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -101,14 +102,33 @@ class AuthController extends Controller
                 'code' => 422
             ]);
         }
-
         $token = $user->createToken('auth_token');
+
+        if (!$this->isTokenValid($token)) {
+            Auth::logout();
+            return response()->json([
+                'code' => 400,
+                'message' => 'Token expired'
+            ]);
+        }
+
         return response()->json([
             'code' => 200,
             'message' => 'success login',
             'data' => $user,
             'access_token' => $token->plainTextToken
         ]);
+    }
+
+    private function isTokenValid($token)
+    {
+        $expirationMinutes = config('sanctum.expiration');
+
+        if ($expirationMinutes === null) {
+            return true; // Token tidak kedaluwarsa jika tidak ada batasan waktu
+        }
+        // Periksa apakah waktu pembuatan token ditambah dengan waktu kedaluwarsa masih lebih besar dari waktu saat ini
+        return $token->accessToken->created_at->addMinutes($expirationMinutes)->isFuture();
     }
 
 
@@ -171,116 +191,114 @@ class AuthController extends Controller
         $this->sendVerificationPassword($user);
         return response()->json([
             'code' => 200,
-            'message' => 'reset password email send'
+            'message' => 'Link reset password sudah terkirim, silahkan check email anda'
         ]);
     }
 
-    // private function sendVerificationPassword(User $user)
-    // {
-    //     $verificationUrl = url('api/v5/view-reset/' . $user->reset_password_token);
-    //     Mail::to($user->email)->send(new ForgotPasswordMail($verificationUrl));
+    private function sendVerificationPassword(User $user)
+    {
+        $verificationUrl = url('v3/view-reset/' . $user->reset_password_token);
+        Mail::to($user->email)->send(new ForgotPasswordMail($verificationUrl));
 
-    //     return response()->json([
-    //         'message' => 'Success sending verification email',
-    //         'code' => 200
-    //     ]);
-    // }
+        return response()->json([
+            'message' => 'Success sending verification email',
+            'code' => 200
+        ]);
+    }
 
-    // public function verifyPassword(Request $request)
-    // {
-    //     $user = User::where('reset_password_token', $request->reset_password_token)->firstOrFail();
-    //     return redirect()->to('/reset-password/' . $request->reset_password_token)->with([
-    //         'success' => 'Email verified successfully',
-    //         'data' => $user,
-    //         'code' => 200
-    //     ]);
-    // }
+    public function verifyPassword(Request $request)
+    {
+        $user = User::where('reset_password_token', $request->reset_password_token)->firstOrFail();
+        return redirect()->to('/reset-password/' . $request->reset_password_token)->with([
+            'success' => 'Email verified successfully',
+            'data' => $user,
+            'code' => 200
+        ]);
+    }
 
+    public function resetPassword(Request $request, $reset_password_token)
+    {
+        $user = User::where('reset_password_token', $reset_password_token)->first();
 
+        if (!$user) {
+            return response()->json([
+                'code' => 400,
+                'message' => 'Token invalid'
+            ]);
+        }
 
-    // public function resetPassword(Request $request, $reset_password_token)
-    // {
-    //     $user = User::where('reset_password_token', $reset_password_token)->first();
+        $validation = Validator::make($request->all(), [
+            'password' => 'required|confirmed',
+            'password_confirmation' => 'required'
+        ]);
 
-    //     if (!$user) {
-    //         return response()->json([
-    //             'code' => 400,
-    //             'message' => 'Token invalid'
-    //         ]);
-    //     }
+        if ($validation->fails()) {
+            return response()->json([
+                'code' => 422,
+                'message' => 'check your validation',
+                'errors' => $validation->errors()
+            ]);
+        }
 
-    //     $validation = Validator::make($request->all(), [
-    //         'password' => 'required|confirmed',
-    //         'password_confirmation' => 'required'
-    //     ]);
-
-    //     if ($validation->fails()) {
-    //         return response()->json([
-    //             'code' => 422,
-    //             'message' => 'check your validation',
-    //             'errors' => $validation->errors()
-    //         ]);
-    //     }
-
-    //     try {
-    //         $user->password = Hash::make($request->input('password'));
-    //         $user->reset_password_token = null;
-    //         $user->save();
-    //     } catch (\Throwable $th) {
-    //         return response()->json([
-    //             'code' => 400,
-    //             'message' => 'failed',
-    //             'errors' => $th->getMessage()
-    //         ]);
-    //     }
+        try {
+            $user->password = Hash::make($request->input('password'));
+            $user->reset_password_token = null;
+            $user->save();
+        } catch (\Throwable $th) {
+            return response()->json([
+                'code' => 400,
+                'message' => 'failed',
+                'errors' => $th->getMessage()
+            ]);
+        }
 
 
-    //     return response()->json([
-    //         'code' => 200,
-    //         'message' => 'success reset password'
-    //     ]);
-    // }
+        return response()->json([
+            'code' => 200,
+            'message' => 'success reset password'
+        ]);
+    }
 
-    // public function changePassword(Request $request)
-    // {
-    //     $validation = Validator::make($request->all(), [
-    //         'old_password' => 'required',
-    //         'password' => 'required|confirmed',
-    //         'password_confirmation' => 'required'
-    //     ]);
+    public function changePassword(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'old_password' => 'required',
+            'password' => 'required|confirmed',
+            'password_confirmation' => 'required'
+        ]);
 
-    //     if ($validation->fails()) {
-    //         return response()->json([
-    //             'code' => 422,
-    //             'message' => 'Check your validation',
-    //             'errors' => $validation->errors()
-    //         ]);
-    //     }
+        if ($validation->fails()) {
+            return response()->json([
+                'code' => 422,
+                'message' => 'Check your validation',
+                'errors' => $validation->errors()
+            ]);
+        }
 
-    //     try {
-    //         $user = User::find(Auth::id());
-    //         if (!Hash::check($request->old_password, $user->password)) {
-    //             return response()->json([
-    //                 'code' => 422,
-    //                 'message' => 'Incorrect old password'
-    //             ]);
-    //         }
+        try {
+            $user = User::find(Auth::id());
+            if (!Hash::check($request->old_password, $user->password)) {
+                return response()->json([
+                    'code' => 422,
+                    'message' => 'Incorrect old password'
+                ]);
+            }
 
-    //         $user->password = Hash::make($request->input('password'));
-    //         $user->save();
+            $user->password = Hash::make($request->input('password'));
+            $user->save();
 
-    //         return response()->json([
-    //             'code' => 200,
-    //             'message' => 'Password changed successfully'
-    //         ]);
-    //     } catch (\Throwable $th) {
-    //         return response()->json([
-    //             'code' => 400,
-    //             'message' => 'Failed',
-    //             'errors' => $th->getMessage()
-    //         ]);
-    //     }
-    // }
+            return response()->json([
+                'code' => 200,
+                'message' => 'Password changed successfully'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'code' => 400,
+                'message' => 'Failed',
+                'errors' => $th->getMessage()
+            ]);
+        }
+    }
 
 
     public function logout()

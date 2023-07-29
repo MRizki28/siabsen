@@ -174,7 +174,7 @@
           <!-- start copy -->
           <tr>
             <td align="center" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-              <p style="margin: 0;">keep your health, and don't forget to take care of your marine health like you take care of your health</p>
+              <p style="margin: 0;">Jaga kesehatan , dan jangan pernah lupakah password anda</p>
             </td>
           </tr>
           <!-- end copy -->
@@ -182,7 +182,7 @@
          <!-- start copy -->
          <tr>
             <td align="center" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-              <p style="margin: 0;">If you did make this request just click the button below:</p>
+              <p style="margin: 0;">KLik link di bawah untuk melakukan reset password</p>
             </td>
           </tr>
           <!-- end copy --> 
@@ -210,7 +210,7 @@
           <!-- start copy -->
           <tr>
             <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
-              <p style="margin: 0;">Admin <br> The Blueeconomist   </p>
+              <p style="margin: 0;">Admin <br> Dimas   </p>
             </td>
           </tr>
           <!-- end copy -->
@@ -238,7 +238,7 @@
           <!-- start permission -->
           <tr>
             <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-              <p style="margin: 0;">You received this email because we received a request for [type_of_action] for your account. If you didn't request [type_of_action] you can safely delete this email.</p>
+              <p style="margin: 0;">@SIAMUD (Sistem Informasi Absen Maritim Muda)</p>
             </td>
           </tr>
           <!-- end permission -->

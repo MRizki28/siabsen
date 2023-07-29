@@ -49,7 +49,7 @@ Route::prefix('v3')->controller(AuthController::class)->group(function () {
     Route::get('/view-reset/{reset_password_token}', 'verifyPassword');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/count', [DashboardController::class, 'countData']);
     Route::get('/', function () {
         return view('user.dashboard');

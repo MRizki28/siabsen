@@ -19,10 +19,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->foreignId('id_divisi')->constrained('tb_divisi');
+            $table->foreignId('id_divisi')->nullable()->constrained('tb_divisi');
             $table->enum('role', [1 , 2]);
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password_reset_token')->nullable();
+            $table->string('reset_password_token')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

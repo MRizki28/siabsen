@@ -5,7 +5,6 @@ use App\Http\Controllers\API\AbsenController;
 use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\DivisiController;
 use App\Http\Controllers\AUTH\AuthController;
-use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
 
 
@@ -57,19 +56,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/divisi', function () {
         return view('user.divisi');
-    });
+    })->middleware('role:1');
 
     Route::get('/data/absen', function () {
         return view('user.data-absen');
-    });
+    })->middleware('role:1');;
 
     Route::post('/data/absen', function () {
         return view('user.data-absen');
-    });
+    })->middleware('role:1');;
 
     Route::get('/absen', function () {
         return view('user.absen');
-    });
+    })->middleware('role:2');;
 
     Route::post('/logout', [AuthController::class, 'logout']);
 

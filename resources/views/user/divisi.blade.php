@@ -99,8 +99,7 @@
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["csv", "excel"]
-            }).buttons().container().appendTo('#dataTable_wrapper .col-md-6:eq(0)');
+            });
             $.ajax({
                 url: "{{ url('v1/febba411-89e8-4fb3-9f55-85c56dcff41d/divisi') }}",
                 method: "GET",

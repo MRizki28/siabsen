@@ -14,7 +14,6 @@
             <div class="card-body">
                 <div id="error-message" class="error-message"></div>
                 <div id="success-message" class="success-message" style="display: none;"></div>
-
                 <form method="post" id="login-form">
                     @csrf
                     <div class="input-group mb-3">

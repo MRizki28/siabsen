@@ -85,7 +85,9 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+
+        try {
+            $credentials = $request->only('email', 'password');
         if (!Auth::attempt($credentials)) {
             return response()->json([
                 'code' => 400,
@@ -118,6 +120,12 @@ class AuthController extends Controller
             'data' => $user,
             'access_token' => $token->plainTextToken
         ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'errors' => $th->getMessage()
+            ]);
+        }
+        
     }
 
     private function isTokenValid($token)
@@ -301,12 +309,18 @@ class AuthController extends Controller
     }
 
 
-    public function logout()
+    public function logout(Request $request)
     {
-        auth()->user()->tokens()->delete();
+        $request->user('web')->tokens()->delete();
+
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return response()->json([
             'code' => 200,
-            'message' => 'sucess logout and delete token access'
+            'message' => 'Logged out successfully'
         ]);
     }
 }

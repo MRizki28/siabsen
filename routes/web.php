@@ -44,11 +44,11 @@ Route::prefix('v3')->controller(AuthController::class)->group(function () {
     Route::post('/396d6585-16ae-4d04-9549-c499e52b75ea/auth/login', 'login');
     Route::get('/396d6585-16ae-4d04-9549-c499e52b75ea/auth', 'getAllData');
     Route::post('396d6585-16ae-4d04-9549-c499e52b75ea/auth/forgot-password/', 'forgotPassword');
-    Route::post('/396d6585-16ae-4d04-9549-c499e52b75ea/auth/reset-password/{password_reset_token}', 'resetPassword');
+    Route::post('/396d6585-16ae-4d04-9549-c499e52b75ea/auth/reset-password/{reset_password_token}', 'resetPassword');
     Route::get('/view-reset/{reset_password_token}', 'verifyPassword');
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/count', [DashboardController::class, 'countData']);
     Route::get('/', function () {
         return view('user.dashboard');
